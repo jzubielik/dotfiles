@@ -1,4 +1,4 @@
-DEPS := curl git tmux vim zsh
+DEPS := curl gnupg tmux vim zsh
 MAKEFLAGS+=--silent
 OSTYPE := $(shell uname -s)
 
@@ -10,13 +10,14 @@ deps:
 			sudo apt-get install -y $$PKG; \
 		done; \
 	elif [ $(OSTYPE) = "Darwin" ]; then \
-		sh -c "ruby -e \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)\""; \
+		which brew >/dev/null || \
+			sh -c "ruby -e \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)\""; \
 		for PKG in $(DEPS); do \
 			brew list -1 | grep "^$$PKG$$" >/dev/null || \
-			sudo brew install $$PKG; \
+			brew install $$PKG; \
 		done; \
 	fi
-	env | grep -c RUBY_VERSION >/dev/null || \
+	[ -d ~/.rvm ] || \
 		(cd ~ && \
 		 curl -sSL https://rvm.io/mpapis.asc | gpg --import - && \
 		 curl -sSL https://get.rvm.io | bash -s stable --auto-dotfiles && \
