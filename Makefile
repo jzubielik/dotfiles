@@ -33,7 +33,7 @@ home: deps
 	[ -f ~/.zsh.prompts/prompt_mudasobwa_setup ] || \
 		curl -sSL https://gist.githubusercontent.com/jzubielik/968aa4dc52e0efc030de/raw -o \
 		~/.zsh.prompts/prompt_mudasobwa_setup && \
-	[ -f ~/.zsh.prompts/prompt_mudasobwa_setup ] || \
+	[ -f ~/.zsh.prompts/prompt_paradox_setup ] || \
 		curl -sSL https://raw.githubusercontent.com/paradox460/prezto/paradox/modules/prompt/functions/prompt_paradox_setup -o \
 		~/.zsh.prompts/prompt_paradox_setup && \
 	[ -d ~/.vim/colors ] || mkdir ~/.vim/colors && \
