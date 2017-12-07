@@ -59,3 +59,11 @@ set cuc" \
 		 sh -c "cd ~/.tmp-fonts && bash ./install.sh" && \
 		 rm -rf ~/.tmp-fonts && \
 		 fc-cache -vf ~/.local/share/fonts)
+
+test:
+	docker build . -t home-test:latest && \
+	docker run -it --rm \
+		-v $PWD:/src \
+		-p 1022:22 \
+		home-test:latest \
+		bash -c "cd /src && make home"
