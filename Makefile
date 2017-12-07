@@ -17,14 +17,6 @@ deps:
 			brew install $$PKG; \
 		done; \
 	fi
-	[ -d ~/.rvm ] || \
-		(cd ~ && \
-		 curl -sSL https://rvm.io/mpapis.asc | gpg --import - && \
-		 curl -sSL https://get.rvm.io | bash -s stable --auto-dotfiles && \
-		 echo "source $$HOME/.rvm/scripts/rvm" >> ~/.profile && \
-		 echo "rvm use --default 2.2" >> ~/.profile && \
-		 ~/.rvm/bin/rvm install 2.2 && \
-		 cd -)
 
 home: deps
 	@echo "********\033[1m Building home \033[0m******************"
