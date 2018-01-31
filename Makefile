@@ -59,11 +59,13 @@ set cuc" \
 		 sh -c "cd ~/.tmp-fonts && bash ./install.sh" && \
 		 rm -rf ~/.tmp-fonts && \
 		 fc-cache -vf ~/.local/share/fonts)
-
+	[ -d ~/.zprezto/modules/prompt/external/powerlevel9k ] || \
+		(git clone https://github.com/bhilburn/powerlevel9k.git  ~/.zprezto/modules/prompt/external/powerlevel9k && \
+		ln -s ~/.zprezto/modules/prompt/external/powerlevel9k/powerlevel9k.zsh-theme ~/.zprezto/modules/prompt/functions/prompt_powerlevel9k_setup)
 test:
 	docker build . -t home-test:latest && \
 	docker run -it --rm \
-		-v $PWD:/src \
+		-v $(PWD):/src \
 		-p 1022:22 \
 		home-test:latest \
 		bash -c "cd /src && make home"
