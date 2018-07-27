@@ -1,22 +1,12 @@
-DEPS := curl gnupg tmux vim zsh
+DEPS := ruby-dev curl gnupg tmux vim zsh
 MAKEFLAGS+=--silent
-OSTYPE := $(shell uname -s)
 
 deps:
 	@echo "********\033[1m Installing dependencies \033[0m********"
-	if [ $(OSTYPE) = "Linux" ]; then \
-		for PKG in $(DEPS); do \
-			dpkg -l | grep $$PKG | grep -c ii >/dev/null || \
-			sudo apt-get install -y $$PKG; \
-		done; \
-	elif [ $(OSTYPE) = "Darwin" ]; then \
-		which brew >/dev/null || \
-			sh -c "ruby -e \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)\""; \
-		for PKG in $(DEPS); do \
-			brew list -1 | grep "^$$PKG$$" >/dev/null || \
-			brew install $$PKG; \
-		done; \
-	fi
+	for PKG in $(DEPS); do \
+		dpkg -l | grep -E " $$PKG " | grep -c ii >/dev/null || \
+		sudo apt-get install -y $$PKG; \
+	done
 
 home: deps
 	@echo "********\033[1m Building home \033[0m******************"
@@ -27,6 +17,9 @@ home: deps
 		~/.zsh.prompts/prompt_mudasobwa_setup && \
 	[ -f ~/.zsh.prompts/prompt_paradox_setup ] || \
 		curl -sSL https://raw.githubusercontent.com/paradox460/prezto/paradox/modules/prompt/functions/prompt_paradox_setup -o \
+ [ -d ~/.zprezto/modules/prompt/external/powerlevel9k ] || \
+	 (git clone https://github.com/bhilburn/powerlevel9k.git  ~/.zprezto/modules/prompt/external/powerlevel9k && \
+	 ln -s ~/.zprezto/modules/prompt/external/powerlevel9k/powerlevel9k.zsh-theme ~/.zprezto/modules/prompt/functions/prompt_powerlevel9k_setup) && \
 		~/.zsh.prompts/prompt_paradox_setup && \
 	[ -d ~/.vim/colors ] || mkdir ~/.vim/colors && \
 	[ -f ~/.vim/colors/molokai.vim ] || \
@@ -34,7 +27,7 @@ home: deps
 		~/.vim/colors/molokai.vim && \
 	echo "autoload -Uz promptinit\n\
 promptinit\n\
-prompt paradox\n\
+prompt powerlevel9k\n\
 set -o emacs" \
 > ~/.zsh.after/profile.zsh && \
 	[ -d ~/.vim/bundle/vim-airline ] || \
@@ -59,9 +52,6 @@ set cuc" \
 		 sh -c "cd ~/.tmp-fonts && bash ./install.sh" && \
 		 rm -rf ~/.tmp-fonts && \
 		 fc-cache -vf ~/.local/share/fonts)
-	[ -d ~/.zprezto/modules/prompt/external/powerlevel9k ] || \
-		(git clone https://github.com/bhilburn/powerlevel9k.git  ~/.zprezto/modules/prompt/external/powerlevel9k && \
-		ln -s ~/.zprezto/modules/prompt/external/powerlevel9k/powerlevel9k.zsh-theme ~/.zprezto/modules/prompt/functions/prompt_powerlevel9k_setup)
 test:
 	docker build . -t home-test:latest && \
 	docker run -it --rm \
